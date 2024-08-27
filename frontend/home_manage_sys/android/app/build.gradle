@@ -23,14 +23,12 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.home_manage_sys"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        applicationId = "com.example.home_manage_syst"
+        minSdkVersion 23 // Specify the minimum SDK version required
+        targetSdkVersion 34 // Specify the target SDK version directly
+        versionCode 1 // Specify your version code
+        versionName "1.0" // Specify your version name
+        multiDexEnabled true
     }
 
     buildTypes {
