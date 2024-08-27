@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "404931127714",
+    "project_id": "homemanagementsystem-18327",
+    "storage_bucket": "homemanagementsystem-18327.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404931127714:android:85b14c85039fde4cf7eafb",
+        "android_client_info": {
+          "package_name": "com.example.home_manage_sys"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAznYNLS9ZH7PPXVhCes0hVHK7m54SzbMw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
