@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.home_manage_syst"
+        applicationId = "com.example.home_manage_sys"
         minSdkVersion 23 // Specify the minimum SDK version required
         targetSdkVersion 34 // Specify the target SDK version directly
         versionCode 1 // Specify your version code
