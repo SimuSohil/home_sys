@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_manage_sys/screens/login_page.dart';
+import 'package:home_manage_sys/widgets/home.dart';
+import 'package:home_manage_sys/widgets/tasks_page.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  int _bottomNavIndex = 0;
 
   void logout() async {
     await _auth.signOut();
@@ -19,6 +25,12 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) => const LoginPage())
     );
   }
+
+  static final List<Widget> _widgetPages = <Widget>[
+    const HomeScreenPage(),
+    const TasksPage(),
+
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +47,24 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: const Icon(Icons.logout)
         )
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Opacity(opacity: 0.3, child: Image.asset('assets/proj_image3.png', fit: BoxFit.cover,)),
-        ],
-      )
+      bottomNavigationBar: ClipRRect(
+        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
+        child: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.task_alt_rounded), label: 'Family Tasks')
+          ],
+          backgroundColor: Colors.brown[200],
+          selectedItemColor: Colors.brown,
+          currentIndex: _bottomNavIndex,
+          onTap: (index){
+            setState(() {
+              _bottomNavIndex = index;
+            });
+          },
+        ),
+      ),
+      body: _widgetPages[_bottomNavIndex]
     );
   }
 }

@@ -124,19 +124,13 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       width: 200,
                       height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffA28B55),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)
-                          )
-                        ),
+                      child: TextButton(
                         onPressed: (){
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) => const SignupPage())
                           );
                         },
-                        child: const Text("Register!", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),)
+                        child: const Text("Not a user? Register Here", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.brown, fontSize: 13),)
                       ),
                     )
                   ],
