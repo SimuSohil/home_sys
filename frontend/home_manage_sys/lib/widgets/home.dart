@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class HomeScreenPage extends StatefulWidget {
   const HomeScreenPage({super.key});
@@ -33,11 +34,40 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
     });
   }
 
+  late String greeting = '';
+
+  void _updateGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12){
+      greeting = "Good Morning";
+    }
+    else if (hour < 17){
+      greeting = "Good Afternoon";
+    }
+    else {
+      greeting = 'Good Evening';
+    }
+  }
+
+  final Map<String, Color> _priorityColor = {
+    'high' : Colors.red,
+    'medium' : Colors.orange,
+    'low' : Colors.green,
+  };
+
+  String _formatDueDate(String dueDate) {
+  final inputFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
+  final dateTime = inputFormat.parseUTC(dueDate).toLocal();
+  final outputFormat = DateFormat('EEE, dd MMM yyyy');
+  return outputFormat.format(dateTime);
+}
+
   @override
   void initState(){
     super.initState();
     _currentQuote = _quotes[_random.nextInt(_quotes.length)];
     _quoteChanger();
+    _updateGreeting();
     fetchData();
   }
 
@@ -54,68 +84,88 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
         fit: StackFit.expand,
         children: [
           Opacity(opacity: 0.3, child: Image.asset('assets/proj_image3.png', fit: BoxFit.cover,)),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width, 
-                  height: 150,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Good Morning', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 40),),
-                      Text(
-                        _currentQuote, 
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                      )
-                    ],
-                  )
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text('Tasks', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 40)),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 400,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.brown[200]
-                  ),
-                  child: ListView.builder(
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index){
-                      final task = tasks[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.brown,
-                            child: Text(
-                              task['id'].toString(), 
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold, 
-                                fontSize: 20
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, top: 10.0, bottom: 10.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width, 
+                    height: 170,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                color: Colors.brown[300],
+                                child: Image.asset('assets/morning2.png',
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.fitHeight,
+                                ),
                               ),
                             ),
-                          ),
-                          title: Text(task['task'], style: const TextStyle(fontWeight: FontWeight.w700),),
+                            const SizedBox(width: 10,),
+                            Text(greeting, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 40),),
+                          ],
                         ),
-                      );
-                    }
+                        const SizedBox(height: 10,),
+                        Text(
+                          _currentQuote, 
+                          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                        )
+                      ],
+                    )
                   ),
                 ),
-              ),
-            ],
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('Tasks', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 40)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 400,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.brown[200]
+                    ),
+                    child: ListView.builder(
+                      itemCount: tasks.length,
+                      itemBuilder: (context, index){
+                        final task = tasks[index];
+                        final priority = task['priority'].toString().toLowerCase();
+                        final color = _priorityColor[priority] ?? Colors.grey;
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: color,
+                              child: Text(task['priority'][0].toString().toUpperCase()),
+                            ),
+                            title: Text(task['task'], style: const TextStyle(fontWeight: FontWeight.w700),),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Due Date: ${_formatDueDate(task['due_date'])}')
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                    ),
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       ),

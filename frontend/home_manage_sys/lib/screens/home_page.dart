@@ -1,11 +1,8 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_manage_sys/screens/login_page.dart';
 import 'package:home_manage_sys/widgets/home.dart';
 import 'package:home_manage_sys/widgets/tasks_page.dart';
-import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
