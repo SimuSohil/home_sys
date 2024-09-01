@@ -10,13 +10,14 @@ db = mysql.connector.connect(
     database="HomeManage"
 )
 
-@app.route('/data', methods=['GET'])
-def getdata():
+@app.route('/tasks/<user_id>', methods=['GET'])
+def get_tasks(user_id):
     cursor = db.cursor(dictionary=True)
-    cursor.execute('select * from family_tasks')
-    rows = cursor.fetchall()
+    query = 'SELECT * FROM tasks WHERE user_id = %s'
+    cursor.execute(query, (user_id,))
+    tasks = cursor.fetchall()
     cursor.close()
-    return jsonify(rows)
+    return jsonify(tasks)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

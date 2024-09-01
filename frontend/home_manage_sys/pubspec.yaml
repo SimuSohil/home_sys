@@ -23,4 +23,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/proj_image3.png
+    - assets/proj_image.png
     - assets/morning2.png

@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
       log('login successful: ${userCredential.user?.email}');
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen())
+        MaterialPageRoute(builder: (context) => HomeScreen(userId: userCredential.user!.uid,))
       );
     }
     catch (e){

@@ -5,7 +5,9 @@ import 'package:home_manage_sys/widgets/home.dart';
 import 'package:home_manage_sys/widgets/tasks_page.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String userId;
+
+  const HomeScreen({super.key, required this.userId});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,14 +25,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  static final List<Widget> _widgetPages = <Widget>[
-    const HomeScreenPage(),
-    const TasksPage(),
-
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _widgetPages = <Widget>[
+      HomeScreenPage(userId: widget.userId,),
+      const TasksPage(),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Management System'), 

@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class HomeScreenPage extends StatefulWidget {
-  const HomeScreenPage({super.key});
+  final String userId;
+
+  const HomeScreenPage({super.key, required this.userId});
 
   @override
   State<HomeScreenPage> createState() => _HomeScreenPageState();
@@ -88,7 +90,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0, top: 10.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(left: 8.0, top: 10.0, right: 8.0),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width, 
                     height: 170,
@@ -100,15 +102,15 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                             ClipOval(
                               child: Container(
                                 color: Colors.brown[300],
-                                child: Image.asset('assets/morning2.png',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.fitHeight,
+                                child: Image.asset('assets/proj_image.png',
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.contain,
                                 ),
                               ),
                             ),
                             const SizedBox(width: 10,),
-                            Text(greeting, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 40),),
+                            Text(greeting, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 35),),
                           ],
                         ),
                         const SizedBox(height: 10,),
@@ -133,7 +135,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    height: 400,
+                    height: 350,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                       color: Colors.brown[200]
@@ -142,7 +144,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                       itemCount: tasks.length,
                       itemBuilder: (context, index){
                         final task = tasks[index];
-                        final priority = task['priority'].toString().toLowerCase();
+                        final priority = task['priority']?.toString().toLowerCase() ?? 'low';
                         final color = _priorityColor[priority] ?? Colors.grey;
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -151,7 +153,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                               backgroundColor: color,
                               child: Text(task['priority'][0].toString().toUpperCase()),
                             ),
-                            title: Text(task['task'], style: const TextStyle(fontWeight: FontWeight.w700),),
+                            title: Text(task['task_name'] ?? 'no tasks', style: const TextStyle(fontWeight: FontWeight.w700),),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -173,13 +175,14 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   }
 
   Future<void> fetchData() async {
-    const url = 'http://127.0.0.1:5000/data';
+    final url = 'http://127.0.0.1:5001/tasks/${widget.userId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
     if (response.statusCode == 200) {
       setState(() {
         tasks = json.decode(body);
+        print('tasks: $tasks');
       });
     }
     else {
