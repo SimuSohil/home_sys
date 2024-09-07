@@ -97,22 +97,8 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            ClipOval(
-                              child: Container(
-                                color: Colors.brown[300],
-                                child: Image.asset('assets/proj_image.png',
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10,),
-                            Text(greeting, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 35),),
-                          ],
-                        ),
+                        const SizedBox(width: 10,),
+                        Text(greeting, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 40),),
                         const SizedBox(height: 10,),
                         Text(
                           _currentQuote, 
@@ -127,7 +113,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Tasks', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 40)),
+                      Text('In Progress', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 40)),
                     ],
                   ),
                 ),
@@ -140,29 +126,32 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                       borderRadius: BorderRadius.circular(10.0),
                       color: Colors.brown[200]
                     ),
-                    child: ListView.builder(
-                      itemCount: tasks.length,
-                      itemBuilder: (context, index){
-                        final task = tasks[index];
-                        final priority = task['priority']?.toString().toLowerCase() ?? 'low';
-                        final color = _priorityColor[priority] ?? Colors.grey;
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: color,
-                              child: Text(task['priority'][0].toString().toUpperCase()),
+                    child: RefreshIndicator(
+                      onRefresh: fetchData,
+                      child: ListView.builder(
+                        itemCount: tasks.length,
+                        itemBuilder: (context, index){
+                          final task = tasks[index];
+                          final priority = task['priority']?.toString().toLowerCase() ?? 'low';
+                          final color = _priorityColor[priority] ?? Colors.grey;
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: color,
+                                child: Text(task['priority'][0].toString().toUpperCase()),
+                              ),
+                              title: Text(task['task_name'] ?? 'no tasks', style: const TextStyle(fontWeight: FontWeight.w700),),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Due Date: ${_formatDueDate(task['due_date'])}')
+                                ],
+                              ),
                             ),
-                            title: Text(task['task_name'] ?? 'no tasks', style: const TextStyle(fontWeight: FontWeight.w700),),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Due Date: ${_formatDueDate(task['due_date'])}')
-                              ],
-                            ),
-                          ),
-                        );
-                      }
+                          );
+                        }
+                      ),
                     ),
                   ),
                 ),
@@ -175,14 +164,13 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   }
 
   Future<void> fetchData() async {
-    final url = 'http://127.0.0.1:5001/tasks/${widget.userId}';
+    final url = 'http://127.0.0.1:5000/tasks/${widget.userId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
     if (response.statusCode == 200) {
       setState(() {
         tasks = json.decode(body);
-        print('tasks: $tasks');
       });
     }
     else {

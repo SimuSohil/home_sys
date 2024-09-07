@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:home_manage_sys/onboarding_screen/onboarding_screen.dart';
 import 'package:home_manage_sys/screens/login_page.dart';
 
 class SignupPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _SignupPageState extends State<SignupPage> {
       );
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginPage())
+        MaterialPageRoute(builder: (context) => const OnboardingScreen())
       );
       log('signed up email: ${userCredential.user?.email}');
     }

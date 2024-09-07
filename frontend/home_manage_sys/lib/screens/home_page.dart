@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_manage_sys/screens/login_page.dart';
-import 'package:home_manage_sys/widgets/home.dart';
-import 'package:home_manage_sys/widgets/tasks_page.dart';
+import 'package:home_manage_sys/home_screens/home.dart';
+import 'package:home_manage_sys/home_screens/tasks_page.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userId;
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final List<Widget> _widgetPages = <Widget>[
       HomeScreenPage(userId: widget.userId,),
-      const TasksPage(),
+      TasksPage(userId: widget.userId,),
     ];
 
     return Scaffold(

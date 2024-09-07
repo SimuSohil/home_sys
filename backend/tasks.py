@@ -20,4 +20,4 @@ def get_tasks(user_id):
     return jsonify(tasks)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True)
