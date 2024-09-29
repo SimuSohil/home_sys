@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:home_manage_sys/screens/login_page.dart';
-import 'package:home_manage_sys/home_screens/home.dart';
-import 'package:home_manage_sys/home_screens/tasks_page.dart';
+import 'package:home_manage_sys/views/authentication/login_page.dart';
+import 'package:home_manage_sys/views/home_screens/home.dart';
+import 'package:home_manage_sys/views/home_screens/tasks_screens/tasks_page.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userId;
@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _widgetPages = <Widget>[
+    final List<Widget> widgetPages = <Widget>[
       HomeScreenPage(userId: widget.userId,),
       TasksPage(userId: widget.userId,),
     ];
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
       ),
-      body: _widgetPages[_bottomNavIndex]
+      body: widgetPages[_bottomNavIndex]
     );
   }
 }

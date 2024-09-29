@@ -1,53 +1,64 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'dart:developer';
-import 'package:home_manage_sys/screens/home_page.dart';
-import 'package:home_manage_sys/screens/signup_page.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:home_manage_sys/views/onboarding_screen/onboarding_screen.dart';
+import 'package:home_manage_sys/views/authentication/login_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+class _SignupPageState extends State<SignupPage> {
+  final _auth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false; 
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
-  String _email = '';
-  String _password = '';
-
-  void login() async {
-    _email = _emailController.text;
-    _password = _passwordController.text;
-    log('email: $_email');
-    log('password: $_password');
+  void register() async {
+    if(_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match!'))
+      );
+      return;
+    }
 
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: _email, password: _password);
-      log('login successful: ${userCredential.user?.email}');
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text, 
+        password: _passwordController.text
+      );
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen(userId: userCredential.user!.uid,))
+        MaterialPageRoute(builder: (context) => const OnboardingScreen())
       );
+      log('signed up email: ${userCredential.user?.email}');
     }
-    catch (e){
-      log('error: $e');
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('login failed: $e'))
-      );
+    catch (e) {
+      log('Error: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false, 
-      appBar: AppBar(title: const Text('Home Management System'), backgroundColor: Colors.brown[300],),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: const Text('Home Management System'), 
+        backgroundColor: Colors.brown[300],
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const LoginPage())
+            );
+          }, 
+          icon: const Icon(Icons.arrow_back_ios_new)
+        ),
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -65,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                       width: double.infinity,
                       child: Text(
-                        'Login Page',
+                        'Sign-Up Page',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -104,35 +115,46 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       obscureText: !_isPasswordVisible, 
                     ),
+                    SizedBox(
+                      height: 10,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    TextField(
+                      controller: _confirmPasswordController,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        filled: true,
+                        fillColor: const Color(0xffffebd5),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                            });
+                          }, 
+                          icon: Icon(
+                            _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off
+                          )
+                        )
+                      ),
+                      obscureText: !_isConfirmPasswordVisible,
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: SizedBox(
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: login,
+                          onPressed: register,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xffA28B55),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5)
                             )
                           ),
-                          child: const Text('Login', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xffFFFFFF)),),
+                          child: const Text('Sign Up', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xffFFFFFF)),),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 200,
-                      height: 50,
-                      child: TextButton(
-                        onPressed: (){
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => const SignupPage())
-                          );
-                        },
-                        child: const Text("Not a user? Register Here", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.brown, fontSize: 13),)
-                      ),
-                    )
                   ],
                 ),
               ),

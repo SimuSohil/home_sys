@@ -12,7 +12,7 @@ class _Screen2State extends State<Screen2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: OnboardingScreenConstants.onboardingColor1,
+      backgroundColor: OnboardingScreenConstants.onboardingColor2,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(

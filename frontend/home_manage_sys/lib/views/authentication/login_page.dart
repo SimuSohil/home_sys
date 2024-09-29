@@ -1,64 +1,53 @@
-import 'dart:developer';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:home_manage_sys/onboarding_screen/onboarding_screen.dart';
-import 'package:home_manage_sys/screens/login_page.dart';
+import 'package:flutter/material.dart';
+import 'dart:developer';
+import 'package:home_manage_sys/views/screens/home_page.dart';
+import 'package:home_manage_sys/views/authentication/signup_page.dart';
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
-  final _auth = FirebaseAuth.instance;
+class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
+  bool _isPasswordVisible = false; 
 
-  void register() async {
-    if(_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match!'))
-      );
-      return;
-    }
+  String _email = '';
+  String _password = '';
+
+  void login() async {
+    _email = _emailController.text;
+    _password = _passwordController.text;
+    log('email: $_email');
+    log('password: $_password');
 
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text, 
-        password: _passwordController.text
-      );
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: _email, password: _password);
+      log('login successful: ${userCredential.user?.email}');
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const OnboardingScreen())
+        MaterialPageRoute(builder: (context) => HomeScreen(userId: userCredential.user!.uid,))
       );
-      log('signed up email: ${userCredential.user?.email}');
     }
-    catch (e) {
-      log('Error: $e');
+    catch (e){
+      log('error: $e');
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('login failed: $e'))
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Home Management System'), 
-        backgroundColor: Colors.brown[300],
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const LoginPage())
-            );
-          }, 
-          icon: const Icon(Icons.arrow_back_ios_new)
-        ),
-      ),
+      resizeToAvoidBottomInset: false, 
+      appBar: AppBar(title: const Text('Home Management System'), backgroundColor: Colors.brown[300],),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -76,7 +65,7 @@ class _SignupPageState extends State<SignupPage> {
                       height: 50,
                       width: double.infinity,
                       child: Text(
-                        'Sign-Up Page',
+                        'Login Page',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -115,46 +104,35 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       obscureText: !_isPasswordVisible, 
                     ),
-                    SizedBox(
-                      height: 10,
-                      width: MediaQuery.of(context).size.width,
-                    ),
-                    TextField(
-                      controller: _confirmPasswordController,
-                      decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        filled: true,
-                        fillColor: const Color(0xffffebd5),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                            });
-                          }, 
-                          icon: Icon(
-                            _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off
-                          )
-                        )
-                      ),
-                      obscureText: !_isConfirmPasswordVisible,
-                    ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: SizedBox(
                         width: 200,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: register,
+                          onPressed: login,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xffA28B55),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5)
                             )
                           ),
-                          child: const Text('Sign Up', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xffFFFFFF)),),
+                          child: const Text('Login', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xffFFFFFF)),),
                         ),
                       ),
                     ),
+                    SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: TextButton(
+                        onPressed: (){
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => const SignupPage())
+                          );
+                        },
+                        child: const Text("Not a user? Register Here", style: TextStyle(fontWeight: FontWeight.w700, color: Colors.brown, fontSize: 13),)
+                      ),
+                    )
                   ],
                 ),
               ),

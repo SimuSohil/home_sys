@@ -1,9 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'dart:convert';
+import 'package:home_manage_sys/views/home_screens/tasks_screens/task_listview.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 class HomeScreenPage extends StatefulWidget {
   final String userId;
@@ -51,26 +49,12 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
     }
   }
 
-  final Map<String, Color> _priorityColor = {
-    'high' : Colors.red,
-    'medium' : Colors.orange,
-    'low' : Colors.green,
-  };
-
-  String _formatDueDate(String dueDate) {
-  final inputFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
-  final dateTime = inputFormat.parseUTC(dueDate).toLocal();
-  final outputFormat = DateFormat('EEE, dd MMM yyyy');
-  return outputFormat.format(dateTime);
-}
-
   @override
   void initState(){
     super.initState();
     _currentQuote = _quotes[_random.nextInt(_quotes.length)];
     _quoteChanger();
     _updateGreeting();
-    fetchData();
   }
 
   @override
@@ -121,38 +105,12 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    height: 350,
+                    height: 200,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.brown[200]
+                      color: Colors.brown[200]?.withOpacity(0.8)
                     ),
-                    child: RefreshIndicator(
-                      onRefresh: fetchData,
-                      child: ListView.builder(
-                        itemCount: tasks.length,
-                        itemBuilder: (context, index){
-                          final task = tasks[index];
-                          final priority = task['priority']?.toString().toLowerCase() ?? 'low';
-                          final color = _priorityColor[priority] ?? Colors.grey;
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: color,
-                                child: Text(task['priority'][0].toString().toUpperCase()),
-                              ),
-                              title: Text(task['task_name'] ?? 'no tasks', style: const TextStyle(fontWeight: FontWeight.w700),),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Due Date: ${_formatDueDate(task['due_date'])}')
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                      ),
-                    ),
+                    child: TaskListview(userId: widget.userId)
                   ),
                 ),
               ],
@@ -161,20 +119,5 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
         ],
       ),
     );
-  }
-
-  Future<void> fetchData() async {
-    final url = 'http://127.0.0.1:5000/tasks/${widget.userId}';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    final body = response.body;
-    if (response.statusCode == 200) {
-      setState(() {
-        tasks = json.decode(body);
-      });
-    }
-    else {
-      throw Exception('Failed to fetch data');
-    }
   }
 }

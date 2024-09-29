@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:home_manage_sys/onboarding_screen/screen_3.dart';
-import 'package:home_manage_sys/screens/home_page.dart';
+import 'package:home_manage_sys/views/onboarding_screen/screen_3.dart';
+import 'package:home_manage_sys/views/screens/home_page.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:home_manage_sys/onboarding_screen/screen_2.dart';
-import 'package:home_manage_sys/onboarding_screen/screen_1.dart';
+import 'package:home_manage_sys/views/onboarding_screen/screen_2.dart';
+import 'package:home_manage_sys/views/onboarding_screen/screen_1.dart';
 
 
 void main() => const OnboardingScreen();
