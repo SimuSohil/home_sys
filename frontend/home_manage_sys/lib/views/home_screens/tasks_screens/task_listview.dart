@@ -64,7 +64,11 @@ class _TaskListviewState extends State<TaskListview> {
           ),
           onTap: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => TasksDetailsScreen(userId: widget.userId))
+              MaterialPageRoute(builder: (context) => TasksDetailsScreen(
+                  taskDetails: task,
+                  userId: widget.userId
+                )
+              )
             );
           },
         );
