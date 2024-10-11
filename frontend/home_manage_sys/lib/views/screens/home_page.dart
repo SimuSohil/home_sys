@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:home_manage_sys/views/authentication/login_page.dart';
+import 'package:home_manage_sys/views/home_screens/family_screens/family.dart';
 import 'package:home_manage_sys/views/home_screens/home.dart';
 import 'package:home_manage_sys/views/home_screens/tasks_screens/tasks_page.dart';
 
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> widgetPages = <Widget>[
       HomeScreenPage(userId: widget.userId,),
       TasksPage(userId: widget.userId,),
+      FamilyPage()
     ];
 
     return Scaffold(
@@ -50,7 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.task_alt_rounded), label: 'Family Tasks')
+            BottomNavigationBarItem(icon: Icon(Icons.task_alt_rounded), label: 'Family Tasks'),
+            BottomNavigationBarItem(icon: Icon(Icons.family_restroom), label: 'Family'),
           ],
           backgroundColor: Colors.brown[200],
           selectedItemColor: Colors.brown,

@@ -11,4 +11,5 @@ class PrimaryColors {
   static var primaryColor2 = Colors.white;
   static var primaryColor3 = Colors.brown[300];
   static var primaryColor4 = Colors.black;
+  static var primaryColor5 = const Color(0xffffebd5);
 }

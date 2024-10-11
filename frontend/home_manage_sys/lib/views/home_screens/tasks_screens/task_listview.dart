@@ -43,41 +43,44 @@ class _TaskListviewState extends State<TaskListview> {
   Widget build(BuildContext context) {
     return tasks.isEmpty ? 
     const Center(child: CircularProgressIndicator(),) : 
-    ListView.builder(
-      itemCount: tasks.length,
-      itemBuilder: (context, index) {
-        final task = tasks[index];
-        final priority = task['priority']?.toString().toLowerCase() ?? 'low';
-        final color = priorityColor[priority] ?? Colors.grey;
-    
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundColor: color,
-            child: Text(task['priority'][0].toString().toUpperCase(), style: TextStyle(color: PrimaryColors.primaryColor4),),
-          ),
-          title: Text(task['task_name'] ?? 'no tasks', style: const TextStyle(fontWeight: FontWeight.w700),),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Due Date: ${_formatDueDate(task['due_date'])}')
-            ],
-          ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => TasksDetailsScreen(
-                  taskDetails: task,
-                  userId: widget.userId
-                )
-              )
-            );
-          },
-        );
-      }
+    RefreshIndicator(
+      onRefresh: fetchdata,
+      child: ListView.builder(
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          final task = tasks[index];
+          final priority = task['priority']?.toString().toLowerCase() ?? 'low';
+          final color = priorityColor[priority] ?? Colors.grey;
+      
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: color,
+              child: Text(task['priority'][0].toString().toUpperCase(), style: TextStyle(color: PrimaryColors.primaryColor4),),
+            ),
+            title: Text(task['task_name'] ?? 'no tasks', style: const TextStyle(fontWeight: FontWeight.w700),),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Due Date: ${_formatDueDate(task['due_date'])}')
+              ],
+            ),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => TasksDetailsScreen(
+                    taskDetails: task,
+                    userId: widget.userId,
+                  ),
+                ),
+              );
+            },
+          );
+        }
+      ),
     );
   }
 
   Future<void> fetchdata() async {
-    final url = 'http://127.0.0.1:5000/tasks/${widget.userId}';
+    final url = 'http://192.168.0.161:8000/tasks/${widget.userId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
@@ -91,3 +94,12 @@ class _TaskListviewState extends State<TaskListview> {
     }
   }
 }
+
+// for localhost in ios Simulator: http://127.0.0.1:5000/tasks/${widget.userId}
+// for localhost in android emulator: http://10.0.2.2:5000/tasks/${widget.userId}
+// for localhost on real devices: (I have changed the port in the backend python code!)
+//  * Running on all addresses (0.0.0.0)
+//  * Running on http://127.0.0.1:8000
+//  * Running on http://192.168.0.105:8000
+
+//Refer this video: https://www.youtube.com/watch?v=cDYCWdkbJI4&t=814s

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_manage_sys/constants.dart';
+import 'package:home_manage_sys/views/home_screens/tasks_screens/task_add.dart';
 import 'package:home_manage_sys/views/home_screens/tasks_screens/task_listview.dart';
 
 class TasksPage extends StatefulWidget {
@@ -36,7 +37,11 @@ class _TasksPageState extends State<TasksPage> {
                             children: [
                               const Text('Tasks', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 35),),
                               ElevatedButton.icon(
-                                onPressed: () {}, 
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => TaskAddPage(userId: widget.userId,))
+                                  );
+                                }, 
                                 icon: const Icon(Icons.add),
                                 label: Text('Add Tasks', style: TextStyle(color: PrimaryColors.primaryColor2),),
                                 style: ElevatedButton.styleFrom(
@@ -50,11 +55,20 @@ class _TasksPageState extends State<TasksPage> {
                       )
                     ),
                   ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'NOTE*: Kindly refresh the tasks list after adding or deleting a task',
+                      style: TextStyle(
+                        fontSize: 15
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 550,
+                      height: 500,
                       decoration: BoxDecoration(
                         // ignore: deprecated_member_use
                         color: Colors.brown[200]?.withOpacity(0.8),
