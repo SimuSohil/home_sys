@@ -80,7 +80,7 @@ class _TaskListviewState extends State<TaskListview> {
   }
 
   Future<void> fetchdata() async {
-    final url = 'http://192.168.0.161:8000/tasks/${widget.userId}';
+    final url = 'http://127.0.0.1:8000/tasks/${widget.userId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;

@@ -46,7 +46,7 @@ class _TaskAddPageState extends State<TaskAddPage> {
     if (_formKey.currentState!.validate()){
       _formKey.currentState!.save();
 
-      final url = 'http://192.168.0.161:8000/add/${widget.userId}';
+      final url = 'http://127.0.0.1:8000/add/${widget.userId}';
       final uri = Uri.parse(url);
       final response = await http.post(
         uri,
@@ -81,6 +81,7 @@ class _TaskAddPageState extends State<TaskAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Home Management System'),
         leading: IconButton(
